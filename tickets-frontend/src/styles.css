@@ -1,14 +1,120 @@
+/* =====================================================================
+   Design tokens — couleurs, motion, surfaces.
+   Le thème sombre surcharge uniquement ces variables (html.theme-sombre).
+   ===================================================================== */
 :root {
+  color-scheme: light;
+
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;
-  color: #1f2933;
-  background-color: #f4f6f8;
-  /* Tokens de motion : courbe et durees homogenes */
+  color: var(--texte);
+  background-color: var(--fond-page);
+
+  /* Surfaces et textes */
+  --fond-page: #f4f6f8;
+  --fond-carte: #ffffff;
+  --fond-alt: #f0f4f8;
+  --texte: #1f2933;
+  --texte-fort: #334e68;
+  --texte-secondaire: #52667a;
+  --texte-discret: #9fb3c8;
+  --texte-inverse: #ffffff;
+
+  /* Bordures */
+  --bordure: #d9e2ec;
+  --bordure-forte: #9fb3c8;
+  --bordure-douce: #e4e7eb;
+
+  /* Palette de marque (identite conservee) */
+  --primaire: #0b5cad;
+  --primaire-survol: #094f96;
+  --danger: #8c2637;
+  --danger-survol: #741f2d;
+  --ambre: #b97a00;
+  --ambre-survol: #976300;
+  --neutre: #52667a;
+  --neutre-survol: #334e68;
+
+  /* Badges de statut */
+  --badge-ouvert-bg: #e1f5ea;
+  --badge-ouvert-texte: #14735e;
+  --badge-cours-bg: #fff3d6;
+  --badge-cours-texte: #8a5b00;
+  --badge-ferme-bg: #f0e3e6;
+  --badge-ferme-texte: #8c2637;
+  --badge-neutre-bg: #e4e7eb;
+  --badge-neutre-texte: #334e68;
+
+  /* Etats : compteur, erreurs */
+  --compteur-bg: #e1f5ea;
+  --compteur-bordure: #9edcc0;
+  --compteur-texte: #14735e;
+  --erreur-bg: #fdf0f2;
+  --erreur-bordure: #e3b2ba;
+  --erreur-texte: #8c2637;
+
+  /* Interactions et ombres */
+  --focus: #0b5cad;
+  --anneau-focus: rgba(11, 92, 173, 0.18);
+  --ombre-faible: rgba(31, 41, 51, 0.18);
+  --ombre-bleu: rgba(11, 92, 173, 0.3);
+  --ombre-fort: rgba(11, 92, 173, 0.4);
+
+  /* Motion : courbe et durees homogenes */
   --courbe: cubic-bezier(0.25, 0.1, 0.25, 1);
   --dur-rapide: 0.15s;
   --dur-standard: 0.3s;
 }
 
+/* ============================ THÈME SOMBRE =========================== */
+html.theme-sombre {
+  color-scheme: dark;
+
+  --fond-page: #10141b;
+  --fond-carte: #181e28;
+  --fond-alt: #212a36;
+  --texte: #e9eef5;
+  --texte-fort: #cfdaea;
+  --texte-secondaire: #a7b4c6;
+  --texte-discret: #77879e;
+
+  --bordure: #2b3543;
+  --bordure-forte: #455266;
+  --bordure-douce: #242d3a;
+
+  --primaire: #2563eb;
+  --primaire-survol: #3b82f6;
+  --danger: #c52a44;
+  --danger-survol: #d8455c;
+  --ambre: #b07400;
+  --ambre-survol: #c68400;
+  --neutre: #5d718c;
+  --neutre-survol: #6d819c;
+
+  --badge-ouvert-bg: #11312a;
+  --badge-ouvert-texte: #5ad3a8;
+  --badge-cours-bg: #33270c;
+  --badge-cours-texte: #eab54f;
+  --badge-ferme-bg: #341a22;
+  --badge-ferme-texte: #f098a8;
+  --badge-neutre-bg: #262f3d;
+  --badge-neutre-texte: #b9c5d6;
+
+  --compteur-bg: #11312a;
+  --compteur-bordure: #1d5a47;
+  --compteur-texte: #64d8ae;
+  --erreur-bg: #2e1720;
+  --erreur-bordure: #5e2c38;
+  --erreur-texte: #ff9fb0;
+
+  --focus: #3b82f6;
+  --anneau-focus: rgba(59, 130, 246, 0.4);
+  --ombre-faible: rgba(0, 0, 0, 0.55);
+  --ombre-bleu: rgba(37, 99, 235, 0.45);
+  --ombre-fort: rgba(37, 99, 235, 0.55);
+}
+
+/* =============================== BASE =============================== */
 * {
   box-sizing: border-box;
 }
@@ -24,14 +130,27 @@ body {
   padding: 24px 16px 120px; /* marge basse : le bouton flottant ne masque jamais le formulaire */
 }
 
+/* En-tete : titre + controle de theme */
+.entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 8px 0 24px;
+}
+
+.entete h1 {
+  margin: 0;
+}
+
 h1 {
   font-size: 1.6rem;
   margin: 8px 0 24px;
 }
 
 .card {
-  background: #ffffff;
-  border: 1px solid #d9e2ec;
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure);
   border-radius: 10px;
   padding: 16px;
   margin-bottom: 20px;
@@ -46,8 +165,9 @@ h1 {
 }
 
 .puce {
-  border: 1px solid #9fb3c8;
-  background: #ffffff;
+  border: 1px solid var(--bordure-forte);
+  background: var(--fond-carte);
+  color: var(--texte);
   border-radius: 999px;
   padding: 6px 14px;
   cursor: pointer;
@@ -60,8 +180,8 @@ h1 {
 }
 
 .puce:hover:not(.puce-active):not(:disabled) {
-  border-color: #0b5cad;
-  color: #0b5cad;
+  border-color: var(--primaire);
+  color: var(--primaire);
 }
 
 .puce:active:not(:disabled) {
@@ -74,9 +194,18 @@ h1 {
 }
 
 .puce-active {
-  background: #0b5cad;
-  border-color: #0b5cad;
-  color: #ffffff;
+  background: var(--primaire);
+  border-color: var(--primaire);
+  color: var(--texte-inverse);
+}
+
+.puce-active:hover {
+  color: var(--texte-inverse);
+}
+
+.puce-tri {
+  margin-left: auto;
+  font-weight: 600;
 }
 
 /* ---- Tableau ---- */
@@ -90,7 +219,7 @@ h1 {
 .tableau td {
   text-align: left;
   padding: 8px 10px;
-  border-bottom: 1px solid #e4e7eb;
+  border-bottom: 1px solid var(--bordure-douce);
   vertical-align: middle;
 }
 
@@ -99,11 +228,11 @@ h1 {
 }
 
 .tableau tbody tr:hover {
-  background-color: #f0f4f8;
+  background-color: var(--fond-alt);
 }
 
 .tableau th {
-  background: #f0f4f8;
+  background: var(--fond-alt);
   font-weight: 600;
 }
 
@@ -111,9 +240,9 @@ h1 {
   margin: 24px 0;
   padding: 24px;
   text-align: center;
-  color: #52667a;
-  background: #ffffff;
-  border: 1px dashed #9fb3c8;
+  color: var(--texte-secondaire);
+  background: var(--fond-carte);
+  border: 1px dashed var(--bordure-forte);
   border-radius: 10px;
 }
 
@@ -124,34 +253,39 @@ h1 {
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 600;
-  background: #e4e7eb;
-  color: #334e68;
+  background: var(--badge-neutre-bg);
+  color: var(--badge-neutre-texte);
 }
 
 .badge-ouvert {
-  background: #e1f5ea;
-  color: #14735e;
+  background: var(--badge-ouvert-bg);
+  color: var(--badge-ouvert-texte);
 }
 
 .badge-en-cours {
-  background: #fff3d6;
-  color: #8a5b00;
+  background: var(--badge-cours-bg);
+  color: var(--badge-cours-texte);
 }
 
 .badge-ferme {
-  background: #f0e3e6;
-  color: #8c2637;
+  background: var(--badge-ferme-bg);
+  color: var(--badge-ferme-texte);
 }
 
-/* ---- Boutons ---- */
+/* ---- Bouton polymorphe (variantes et tailles) ---- */
 .bouton {
-  background: #0b5cad;
-  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--primaire);
+  color: var(--texte-inverse);
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
   font-size: 0.95rem;
   cursor: pointer;
+  text-decoration: none;
   transition:
     background-color var(--dur-rapide) var(--courbe),
     transform var(--dur-rapide) var(--courbe),
@@ -159,9 +293,9 @@ h1 {
 }
 
 .bouton:hover:not(:disabled) {
-  background: #094f96;
+  background: var(--primaire-survol);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(11, 92, 173, 0.28);
+  box-shadow: 0 2px 6px var(--ombre-bleu);
 }
 
 .bouton:active:not(:disabled) {
@@ -174,17 +308,71 @@ h1 {
   cursor: not-allowed;
 }
 
-.bouton-fermer {
-  background: #8c2637;
+.bouton-danger {
+  background: var(--danger);
+}
+
+.bouton-danger:hover:not(:disabled) {
+  background: var(--danger-survol);
+}
+
+.bouton-ambre {
+  background: var(--ambre);
+}
+
+.bouton-ambre:hover:not(:disabled) {
+  background: var(--ambre-survol);
+}
+
+.bouton-neutre {
+  background: var(--neutre);
+}
+
+.bouton-neutre:hover:not(:disabled) {
+  background: var(--neutre-survol);
+}
+
+.bouton-petit {
   padding: 4px 12px;
+  font-size: 0.9rem;
 }
 
-.bouton-fermer:hover:not(:disabled) {
-  background: #741f2d;
+.est-chargement {
+  opacity: 0.7;
 }
 
-.aucune-action {
-  color: #9fb3c8;
+/* ---- Controle de theme ---- */
+.controle-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 14px;
+  background: var(--fond-carte);
+  color: var(--texte);
+  border: 1px solid var(--bordure);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-rapide) var(--courbe),
+    color var(--dur-rapide) var(--courbe),
+    background-color var(--dur-rapide) var(--courbe),
+    transform var(--dur-rapide) var(--courbe);
+}
+
+.controle-theme:hover {
+  border-color: var(--primaire);
+  color: var(--primaire);
+}
+
+.controle-theme:active {
+  transform: scale(0.96);
+}
+
+.controle-theme-libelle {
+  font-weight: 600;
 }
 
 /* ---- Formulaire ---- */
@@ -208,22 +396,29 @@ h1 {
   font: inherit;
   font-weight: 400;
   padding: 8px 10px;
-  border: 1px solid #9fb3c8;
+  background: var(--fond-carte);
+  color: var(--texte);
+  border: 1px solid var(--bordure-forte);
   border-radius: 6px;
   transition:
     border-color var(--dur-rapide) var(--courbe),
     box-shadow var(--dur-rapide) var(--courbe);
 }
 
+.formulaire input::placeholder,
+.formulaire textarea::placeholder {
+  color: var(--texte-discret);
+}
+
 .formulaire input:focus,
 .formulaire textarea:focus {
   outline: none;
-  border-color: #0b5cad;
-  box-shadow: 0 0 0 3px rgba(11, 92, 173, 0.18);
+  border-color: var(--primaire);
+  box-shadow: 0 0 0 3px var(--anneau-focus);
 }
 
 .obligatoire {
-  color: #8c2637;
+  color: var(--danger);
 }
 
 .formulaire-erreur {
@@ -241,16 +436,16 @@ h1 {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #ffffff;
-  border: 1px solid #d9e2ec;
-  color: #334e68;
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure);
+  color: var(--texte-fort);
 }
 
 .indicateur {
   width: 18px;
   height: 18px;
-  border: 3px solid #d9e2ec;
-  border-top-color: #0b5cad;
+  border: 3px solid var(--bordure);
+  border-top-color: var(--primaire);
   border-radius: 50%;
   animation: tourner 0.8s linear infinite;
 }
@@ -262,9 +457,9 @@ h1 {
 }
 
 .etat-erreur {
-  background: #fdf0f2;
-  border: 1px solid #e3b2ba;
-  color: #8c2637;
+  background: var(--erreur-bg);
+  border: 1px solid var(--erreur-bordure);
+  color: var(--erreur-texte);
 }
 
 .etat-erreur p {
@@ -275,16 +470,11 @@ h1 {
 .compteur {
   margin: 0 0 16px;
   padding: 10px 14px;
-  background: #e1f5ea;
-  border: 1px solid #9edcc0;
+  background: var(--compteur-bg);
+  border: 1px solid var(--compteur-bordure);
   border-radius: 6px;
-  color: #14735e;
+  color: var(--compteur-texte);
   font-size: 0.95rem;
-}
-
-.puce-tri {
-  margin-left: auto;
-  font-weight: 600;
 }
 
 /* ---- Pagination ---- */
@@ -297,7 +487,7 @@ h1 {
 }
 
 .page-info {
-  color: #52667a;
+  color: var(--texte-secondaire);
   font-size: 0.9rem;
 }
 
@@ -309,27 +499,20 @@ h1 {
   margin-left: 6px;
 }
 
-.bouton-demarrer {
-  background: #b97a00;
-  padding: 4px 12px;
-}
-
-.bouton-demarrer:hover:not(:disabled) {
-  background: #976300;
-}
-
-.bouton-supprimer {
-  background: #52667a;
-  padding: 4px 12px;
-}
-
-.bouton-supprimer:hover:not(:disabled) {
-  background: #334e68;
+/* ---- Messages d'erreur du serveur ---- */
+.message-erreur {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: var(--erreur-bg);
+  border: 1px solid var(--erreur-bordure);
+  color: var(--erreur-texte);
+  font-size: 0.95rem;
 }
 
 /* ---- Focus clavier visible (accessibilite) ---- */
 *:focus-visible {
-  outline: 2px solid #0b5cad;
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
@@ -418,22 +601,22 @@ h1 {
 }
 
 .bouton-nouveau {
-  background: #0b5cad;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(11, 92, 173, 0.4);
+  background: var(--primaire);
+  color: var(--texte-inverse);
+  box-shadow: 0 4px 14px var(--ombre-fort);
 }
 
 .bouton-nouveau:hover {
-  background: #094f96;
+  background: var(--primaire-survol);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(11, 92, 173, 0.5);
+  box-shadow: 0 6px 18px var(--ombre-fort);
 }
 
 .bouton-haut {
-  background: #ffffff;
-  color: #0b5cad;
-  border: 1px solid #9fb3c8;
-  box-shadow: 0 3px 10px rgba(31, 41, 51, 0.18);
+  background: var(--fond-carte);
+  color: var(--primaire);
+  border: 1px solid var(--bordure-forte);
+  box-shadow: 0 3px 10px var(--ombre-faible);
   width: 44px;
   height: 44px;
   opacity: 0;
@@ -450,8 +633,8 @@ h1 {
 }
 
 .bouton-haut:hover {
-  background: #f0f4f8;
-  border-color: #0b5cad;
+  background: var(--fond-alt);
+  border-color: var(--primaire);
 }
 
 /* ---- Debordement du tableau sur petits ecrans ---- */
@@ -474,6 +657,14 @@ h1 {
     width: 40px;
     height: 40px;
   }
+
+  .entete {
+    gap: 8px;
+  }
+
+  .controle-theme-libelle {
+    display: none; /* libelle textuel masque sur petit ecran, l'icone et l'aria-label restent */
+  }
 }
 
 /* ---- Accessibilite : mouvement reduit ---- */
@@ -491,15 +682,4 @@ h1 {
   .indicateur {
     animation: tourner 0.8s linear infinite !important;
   }
-}
-
-/* ---- Messages d'erreur du serveur ---- */
-.message-erreur {
-  margin: 0 0 16px;
-  padding: 10px 14px;
-  border-radius: 6px;
-  background: #fdf0f2;
-  border: 1px solid #e3b2ba;
-  color: #8c2637;
-  font-size: 0.95rem;
 }

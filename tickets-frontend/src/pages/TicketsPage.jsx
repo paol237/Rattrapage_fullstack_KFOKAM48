@@ -3,6 +3,8 @@ import { creerTicket, listerTickets, demarrerTicket, fermerTicket, supprimerTick
 import TicketForm from '../components/TicketForm.jsx';
 import TicketList from '../components/TicketList.jsx';
 import FloatingActions from '../components/FloatingActions.jsx';
+import Bouton from '../components/Bouton.jsx';
+import ControleTheme from '../components/ControleTheme.jsx';
 import { STATUTS } from '../components/BadgeStatut.jsx';
 
 const TAILLE_PAGE = 5;
@@ -134,7 +136,10 @@ export default function TicketsPage() {
 
   return (
     <main className="page">
-      <h1>Gestion des tickets</h1>
+      <header className="entete">
+        <h1>Gestion des tickets</h1>
+        <ControleTheme />
+      </header>
 
       <p className="compteur">
         <strong>{donnees.ticketsOuverts}</strong> ticket{donnees.ticketsOuverts > 1 ? 's' : ''} ouvert
@@ -179,9 +184,7 @@ export default function TicketsPage() {
       {!chargement && erreurChargement && (
         <div className="etat etat-erreur" role="alert">
           <p>{erreurChargement}</p>
-          <button type="button" className="bouton" onClick={() => charger()}>
-            Réessayer
-          </button>
+          <Bouton onClick={() => charger()}>Réessayer</Bouton>
         </div>
       )}
 

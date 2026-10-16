@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Bouton from './Bouton.jsx';
 
 /**
  * Formulaire de creation d'un ticket.
@@ -47,14 +48,14 @@ export default function TicketForm({ onSubmit, enCours, erreur }) {
             placeholder="Detail de la demande…"
           />
         </label>
-        <button
+        <Bouton
           type="submit"
-          className="bouton"
           disabled={!soumissionValide}
+          chargement={enCours}
           title={titre.trim().length === 0 ? 'Le titre est obligatoire' : undefined}
         >
           {enCours ? 'Enregistrement…' : 'Créer le ticket'}
-        </button>
+        </Bouton>
         {erreur && <p className="message-erreur formulaire-erreur" role="alert">{erreur}</p>}
       </form>
     </section>
