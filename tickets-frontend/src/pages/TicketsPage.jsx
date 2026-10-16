@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { creerTicket, listerTickets, fermerTicket, supprimerTicket, ErreurApi } from '../services/ticketApi.js';
 import TicketForm from '../components/TicketForm.jsx';
 import TicketList from '../components/TicketList.jsx';
@@ -31,6 +31,11 @@ export default function TicketsPage() {
     } finally {
       setChargement(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    charger();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
