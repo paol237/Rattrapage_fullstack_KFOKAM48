@@ -36,6 +36,7 @@ com.kfokam48.tickets
 |---|---|---|---|
 | POST | `/api/tickets` | 201 | 400 (RG-01), 409 (RG-02) |
 | GET | `/api/tickets?statut=&page=&taille=&tri=` | 200 | — |
+| PATCH | `/api/tickets/{id}/demarrer` | 200 (OUVERT → EN_COURS) | 404 (id inconnu), 409 (RG-05) |
 | PATCH | `/api/tickets/{id}/fermer` | 200 | 404 (id inconnu), 409 (RG-03) |
 | DELETE | `/api/tickets/{id}` | 204 | 404 (id inconnu), 409 (RG-04 : non fermé) |
 

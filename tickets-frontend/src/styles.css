@@ -249,6 +249,23 @@ h1 {
   font-size: 0.9rem;
 }
 
+.cellule-actions {
+  white-space: nowrap;
+}
+
+.cellule-actions .bouton + .bouton {
+  margin-left: 6px;
+}
+
+.bouton-demarrer {
+  background: #b97a00;
+  padding: 4px 12px;
+}
+
+.bouton-demarrer:hover:not(:disabled) {
+  background: #976300;
+}
+
 .bouton-supprimer {
   background: #52667a;
   padding: 4px 12px;
