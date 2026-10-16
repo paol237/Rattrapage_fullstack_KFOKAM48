@@ -25,12 +25,13 @@ export default function TicketForm({ onSubmit, enCours, erreur }) {
   }
 
   return (
-    <section className="card">
+    <section className="card" id="formulaire-nouveau-ticket">
       <h2>Nouveau ticket</h2>
       <form className="formulaire" onSubmit={gererSoumission}>
-        <label>
+        <label htmlFor="champ-titre">
           Titre <span className="obligatoire">*</span>
           <input
+            id="champ-titre"
             type="text"
             value={titre}
             onChange={(e) => setTitre(e.target.value)}

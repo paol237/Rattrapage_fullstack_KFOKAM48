@@ -70,6 +70,23 @@ public class TicketService {
     }
 
     /**
+     * RG-05 : un ticket ne passe en EN_COURS que s'il est OUVERT.
+     * Un ticket deja EN_COURS ou FERME ne change pas d'etat -> RG-05 -> 409.
+     */
+    public TicketOutputDto demarrer(Long id) {
+        Ticket ticket = ticketTrouve(id);
+        if (ticket.getStatut() != Ticket.Statut.OUVERT) {
+            throw new RegleMetierException(
+                    "RG-05",
+                    "RG-05 : seul un ticket OUVERT peut passer en EN_COURS. Le ticket " + id
+                            + " est " + ticket.getStatut() + "."
+            );
+        }
+        ticket.setStatut(Ticket.Statut.EN_COURS);
+        return TicketOutputDto.from(ticketRepository.save(ticket));
+    }
+
+    /**
      * RG-03 : un ticket ne peut etre ferme que s'il est OUVERT ou EN_COURS.
      * Un ticket FERME ne change plus d'etat -> RG-03 -> 409.
      */

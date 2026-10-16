@@ -32,6 +32,7 @@ npm run dev
 |--------|-----------------------------|------------------|--------|--------------|
 | POST   | `/api/tickets`              | Créer un ticket  | 201    | 400, 409     |
 | GET    | `/api/tickets?statut=&page=&taille=&tri=` | Lister (filtre, pagination, tri par date) | 200    | —            |
+| PATCH  | `/api/tickets/{id}/demarrer` | Passer de OUVERT à EN_COURS | 200    | 404, 409     |
 | PATCH  | `/api/tickets/{id}/fermer`  | Fermer un ticket | 200    | 404, 409     |
 | DELETE | `/api/tickets/{id}`         | Supprimer (ticket fermé uniquement) | 204    | 404, 409     |
 
@@ -47,6 +48,7 @@ Le client n'envoie que `titre` et `description`. `statut` (OUVERT à la créatio
 | RG-02 | Titre unique (insensible à la casse) → 409, la réponse nomme la règle                                      |
 | RG-03 | Fermeture interdite sur un ticket FERME → 409, la réponse nomme la règle ; identifiant inconnu → 404        |
 | RG-04 | Suppression réservée aux tickets FERME → 409 si le ticket n'est pas fermé, 404 si l'identifiant est inconnu  |
+| RG-05 | Seul un ticket OUVERT passe en EN_COURS → 409 sinon (déjà EN_COURS ou FERME) ; id inconnu → 404          |
 
 ### Exemples
 
@@ -76,6 +78,7 @@ curl -X PATCH http://localhost:8080/api/tickets/999/fermer
 - **Tri par date de création** : bouton « ↓ Plus récents / ↑ Plus anciens ».
 - **Compteur de tickets ouverts** : bandeau vert au-dessus de la liste.
 - **Suppression d'un ticket fermé** : bouton « Supprimer » uniquement sur les lignes FERME, avec confirmation et message RG-04 du serveur en cas de refus.
+- **Démarrage d'un ticket ouvert** : bouton « Démarrer » sur les lignes OUVERT, qui passe le statut à EN_COURS (RG-05 en cas de refus : déjà EN_COURS ou FERME).
 
 ## Retrouver un ticket en base (partie A.4)
 

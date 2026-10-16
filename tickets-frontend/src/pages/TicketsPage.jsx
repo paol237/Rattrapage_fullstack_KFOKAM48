@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { creerTicket, listerTickets, fermerTicket, supprimerTicket, ErreurApi } from '../services/ticketApi.js';
+import { creerTicket, listerTickets, demarrerTicket, fermerTicket, supprimerTicket, ErreurApi } from '../services/ticketApi.js';
 import TicketForm from '../components/TicketForm.jsx';
 import TicketList from '../components/TicketList.jsx';
+import FloatingActions from '../components/FloatingActions.jsx';
 import { STATUTS } from '../components/BadgeStatut.jsx';
 
 const TAILLE_PAGE = 5;
@@ -16,7 +17,7 @@ export default function TicketsPage() {
   const [erreurFormulaire, setErreurFormulaire] = useState(null);
   const [creationEnCours, setCreationEnCours] = useState(false);
   const [ticketEnTraitement, setTicketEnTraitement] = useState(null);
-  const [erreurFermeture, setErreurFermeture] = useState(null);
+  const [erreurAction, setErreurAction] = useState(null);
   const [erreurSuppression, setErreurSuppression] = useState(null);
 
   const charger = useCallback(async ({ statut = statutFiltre, page = pageCourante, triCourant = tri } = {}) => {
@@ -70,18 +71,37 @@ export default function TicketsPage() {
     }
   }
 
+  async function gererDemarrer(ticket) {
+    const confirme = window.confirm(
+      `Passer le ticket « ${ticket.titre} » en EN_COURS ?`
+    );
+    if (!confirme) return;
+    setTicketEnTraitement(ticket.id);
+    setErreurAction(null);
+    try {
+      await demarrerTicket(ticket.id);
+      await charger();
+    } catch (erreur) {
+      setErreurAction(
+        `Ticket « ${ticket.titre} » : ${erreur instanceof ErreurApi ? erreur.message : 'le démarrage a échoué.'}`
+      );
+    } finally {
+      setTicketEnTraitement(null);
+    }
+  }
+
   async function gererFermeture(ticket) {
     const confirme = window.confirm(
       `Voulez-vous vraiment fermer le ticket « ${ticket.titre} » ? Cette action est définitive.`
     );
     if (!confirme) return;
     setTicketEnTraitement(ticket.id);
-    setErreurFermeture(null);
+    setErreurAction(null);
     try {
       await fermerTicket(ticket.id);
       await charger();
     } catch (erreur) {
-      setErreurFermeture(
+      setErreurAction(
         `Ticket « ${ticket.titre} » : ${erreur instanceof ErreurApi ? erreur.message : 'la fermeture a échoué.'}`
       );
     } finally {
@@ -95,6 +115,7 @@ export default function TicketsPage() {
     );
     if (!confirme) return;
     setTicketEnTraitement(ticket.id);
+    setErreurAction(null);
     setErreurSuppression(null);
     try {
       await supprimerTicket(ticket.id);
@@ -166,12 +187,13 @@ export default function TicketsPage() {
 
       {!chargement && !erreurChargement && (
         <>
-          {erreurFermeture && <p className="message-erreur" role="alert">{erreurFermeture}</p>}
+          {erreurAction && <p className="message-erreur" role="alert">{erreurAction}</p>}
           {erreurSuppression && <p className="message-erreur" role="alert">{erreurSuppression}</p>}
 
-          <section className="card">
+          <section className="card card-tableau">
             <TicketList
               tickets={donnees.contenu}
+              surDemarrer={gererDemarrer}
               surFermer={gererFermeture}
               surSupprimer={gererSuppression}
               ticketEnTraitement={ticketEnTraitement}
@@ -207,6 +229,8 @@ export default function TicketsPage() {
         enCours={creationEnCours}
         erreur={erreurFormulaire}
       />
+
+      <FloatingActions />
     </main>
   );
 }

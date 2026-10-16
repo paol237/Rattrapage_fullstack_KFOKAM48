@@ -11,7 +11,7 @@ function formatDate(iso) {
   });
 }
 
-export default function TicketList({ tickets, surFermer, surSupprimer, ticketEnTraitement }) {
+export default function TicketList({ tickets, surDemarrer, surFermer, surSupprimer, ticketEnTraitement }) {
   if (tickets.length === 0) {
     return <p className="liste-vide">Aucun ticket</p>;
   }
@@ -32,7 +32,18 @@ export default function TicketList({ tickets, surFermer, surSupprimer, ticketEnT
             <td>{ticket.titre}</td>
             <td><BadgeStatut statut={ticket.statut} /></td>
             <td>{formatDate(ticket.dateCreation)}</td>
-            <td>
+            <td className="cellule-actions">
+              {ticket.statut === 'OUVERT' && (
+                <button
+                  type="button"
+                  className="bouton bouton-demarrer"
+                  onClick={() => surDemarrer(ticket)}
+                  disabled={ticketEnTraitement === ticket.id}
+                  title="Passer ce ticket en EN_COURS"
+                >
+                  {ticketEnTraitement === ticket.id ? '…' : 'Démarrer'}
+                </button>
+              )}
               {ticket.statut === 'OUVERT' || ticket.statut === 'EN_COURS' ? (
                 <button
                   type="button"

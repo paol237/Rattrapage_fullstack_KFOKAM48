@@ -3,6 +3,10 @@
   line-height: 1.5;
   color: #1f2933;
   background-color: #f4f6f8;
+  /* Tokens de motion : courbe et durees homogenes */
+  --courbe: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --dur-rapide: 0.15s;
+  --dur-standard: 0.3s;
 }
 
 * {
@@ -17,7 +21,7 @@ body {
 .page {
   max-width: 900px;
   margin: 0 auto;
-  padding: 24px 16px 48px;
+  padding: 24px 16px 120px; /* marge basse : le bouton flottant ne masque jamais le formulaire */
 }
 
 h1 {
@@ -48,6 +52,25 @@ h1 {
   padding: 6px 14px;
   cursor: pointer;
   font-size: 0.9rem;
+  transition:
+    background-color var(--dur-rapide) var(--courbe),
+    color var(--dur-rapide) var(--courbe),
+    border-color var(--dur-rapide) var(--courbe),
+    transform var(--dur-rapide) var(--courbe);
+}
+
+.puce:hover:not(.puce-active):not(:disabled) {
+  border-color: #0b5cad;
+  color: #0b5cad;
+}
+
+.puce:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.puce:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 .puce-active {
@@ -69,6 +92,14 @@ h1 {
   padding: 8px 10px;
   border-bottom: 1px solid #e4e7eb;
   vertical-align: middle;
+}
+
+.tableau tbody tr {
+  transition: background-color var(--dur-rapide) var(--courbe);
+}
+
+.tableau tbody tr:hover {
+  background-color: #f0f4f8;
 }
 
 .tableau th {
@@ -121,10 +152,21 @@ h1 {
   padding: 8px 16px;
   font-size: 0.95rem;
   cursor: pointer;
+  transition:
+    background-color var(--dur-rapide) var(--courbe),
+    transform var(--dur-rapide) var(--courbe),
+    box-shadow var(--dur-rapide) var(--courbe);
 }
 
 .bouton:hover:not(:disabled) {
   background: #094f96;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(11, 92, 173, 0.28);
+}
+
+.bouton:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+  box-shadow: none;
 }
 
 .bouton:disabled {
@@ -168,6 +210,16 @@ h1 {
   padding: 8px 10px;
   border: 1px solid #9fb3c8;
   border-radius: 6px;
+  transition:
+    border-color var(--dur-rapide) var(--courbe),
+    box-shadow var(--dur-rapide) var(--courbe);
+}
+
+.formulaire input:focus,
+.formulaire textarea:focus {
+  outline: none;
+  border-color: #0b5cad;
+  box-shadow: 0 0 0 3px rgba(11, 92, 173, 0.18);
 }
 
 .obligatoire {
@@ -249,6 +301,23 @@ h1 {
   font-size: 0.9rem;
 }
 
+.cellule-actions {
+  white-space: nowrap;
+}
+
+.cellule-actions .bouton + .bouton {
+  margin-left: 6px;
+}
+
+.bouton-demarrer {
+  background: #b97a00;
+  padding: 4px 12px;
+}
+
+.bouton-demarrer:hover:not(:disabled) {
+  background: #976300;
+}
+
 .bouton-supprimer {
   background: #52667a;
   padding: 4px 12px;
@@ -256,6 +325,172 @@ h1 {
 
 .bouton-supprimer:hover:not(:disabled) {
   background: #334e68;
+}
+
+/* ---- Focus clavier visible (accessibilite) ---- */
+*:focus-visible {
+  outline: 2px solid #0b5cad;
+  outline-offset: 2px;
+}
+
+/* ---- Motion : apparitions ---- */
+@keyframes apparition {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+h1 {
+  animation: apparition var(--dur-standard) var(--courbe) both;
+}
+
+.compteur {
+  animation: apparition var(--dur-standard) 0.05s var(--courbe) both;
+}
+
+.filtres {
+  animation: apparition var(--dur-standard) 0.1s var(--courbe) both;
+}
+
+.card {
+  animation: apparition var(--dur-standard) 0.1s var(--courbe) both;
+}
+
+/* Lignes du tableau : entree en cascade (5 max, court) lors des changements d'etat */
+.tableau tbody tr:nth-child(1) {
+  animation: apparition var(--dur-rapide) 0.15s var(--courbe) both;
+}
+.tableau tbody tr:nth-child(2) {
+  animation: apparition var(--dur-rapide) 0.2s var(--courbe) both;
+}
+.tableau tbody tr:nth-child(3) {
+  animation: apparition var(--dur-rapide) 0.25s var(--courbe) both;
+}
+.tableau tbody tr:nth-child(4) {
+  animation: apparition var(--dur-rapide) 0.3s var(--courbe) both;
+}
+.tableau tbody tr:nth-child(5) {
+  animation: apparition var(--dur-rapide) 0.35s var(--courbe) both;
+}
+
+/* Retour visuel des messages et etats */
+.message-erreur,
+.etat,
+.liste-vide {
+  animation: apparition var(--dur-rapide) var(--courbe) both;
+}
+
+/* ---- Boutons flottants ---- */
+.actions-flottantes {
+  position: fixed;
+  right: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 50;
+}
+
+.bouton-flottant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    transform var(--dur-rapide) var(--courbe),
+    box-shadow var(--dur-rapide) var(--courbe),
+    opacity var(--dur-standard) var(--courbe),
+    background-color var(--dur-rapide) var(--courbe);
+}
+
+.bouton-flottant:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.bouton-nouveau {
+  background: #0b5cad;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(11, 92, 173, 0.4);
+}
+
+.bouton-nouveau:hover {
+  background: #094f96;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(11, 92, 173, 0.5);
+}
+
+.bouton-haut {
+  background: #ffffff;
+  color: #0b5cad;
+  border: 1px solid #9fb3c8;
+  box-shadow: 0 3px 10px rgba(31, 41, 51, 0.18);
+  width: 44px;
+  height: 44px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.bouton-haut.est-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.bouton-haut:hover {
+  background: #f0f4f8;
+  border-color: #0b5cad;
+}
+
+/* ---- Debordement du tableau sur petits ecrans ---- */
+.card-tableau {
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .actions-flottantes {
+    right: 14px;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .bouton-flottant {
+    width: 48px;
+    height: 48px;
+  }
+
+  .bouton-haut {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ---- Accessibilite : mouvement reduit ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  /* Le spinner reste actif : il indique un etat essentiel (chargement) */
+  .indicateur {
+    animation: tourner 0.8s linear infinite !important;
+  }
 }
 
 /* ---- Messages d'erreur du serveur ---- */

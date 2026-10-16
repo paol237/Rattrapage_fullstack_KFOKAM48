@@ -33,6 +33,15 @@ export async function creerTicket({ titre, description }) {
   return corps;
 }
 
+export async function demarrerTicket(id) {
+  const reponse = await fetch(`${BASE_URL}/${id}/demarrer`, { method: 'PATCH' });
+  const corps = await reponse.json().catch(() => null);
+  if (!reponse.ok) {
+    throw new ErreurApi(extraireMessage(corps), reponse.status);
+  }
+  return corps;
+}
+
 export async function fermerTicket(id) {
   const reponse = await fetch(`${BASE_URL}/${id}/fermer`, { method: 'PATCH' });
   const corps = await reponse.json().catch(() => null);

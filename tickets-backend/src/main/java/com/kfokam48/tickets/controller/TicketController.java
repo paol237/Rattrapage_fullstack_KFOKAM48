@@ -70,6 +70,18 @@ public class TicketController {
         return ticketService.lister(statut, page, taille, tri);
     }
 
+    @PatchMapping("/{id}/demarrer")
+    @Operation(summary = "Passer un ticket en EN_COURS",
+            description = "RG-05 : seul un ticket OUVERT peut passer en EN_COURS.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ticket passe en EN_COURS"),
+            @ApiResponse(responseCode = "404", description = "Identifiant inconnu"),
+            @ApiResponse(responseCode = "409", description = "RG-05 : le ticket est deja EN_COURS ou FERME")
+    })
+    public TicketOutputDto demarrer(@PathVariable Long id) {
+        return ticketService.demarrer(id);
+    }
+
     @PatchMapping("/{id}/fermer")
     @Operation(summary = "Fermer un ticket", description = "RG-03 : impossible si le ticket est deja FERME.")
     @ApiResponses({
