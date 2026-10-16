@@ -1,0 +1,231 @@
+:root {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: #1f2933;
+  background-color: #f4f6f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 8px 0 24px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+/* ---- Filtre par statut ---- */
+.filtres {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.puce {
+  border: 1px solid #9fb3c8;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.puce-active {
+  background: #0b5cad;
+  border-color: #0b5cad;
+  color: #ffffff;
+}
+
+/* ---- Tableau ---- */
+.tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tableau th,
+.tableau td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e4e7eb;
+  vertical-align: middle;
+}
+
+.tableau th {
+  background: #f0f4f8;
+  font-weight: 600;
+}
+
+.liste-vide {
+  margin: 24px 0;
+  padding: 24px;
+  text-align: center;
+  color: #52667a;
+  background: #ffffff;
+  border: 1px dashed #9fb3c8;
+  border-radius: 10px;
+}
+
+/* ---- Badges de statut ---- */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #e4e7eb;
+  color: #334e68;
+}
+
+.badge-ouvert {
+  background: #e1f5ea;
+  color: #14735e;
+}
+
+.badge-en-cours {
+  background: #fff3d6;
+  color: #8a5b00;
+}
+
+.badge-ferme {
+  background: #f0e3e6;
+  color: #8c2637;
+}
+
+/* ---- Boutons ---- */
+.bouton {
+  background: #0b5cad;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.bouton:hover:not(:disabled) {
+  background: #094f96;
+}
+
+.bouton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.bouton-fermer {
+  background: #8c2637;
+  padding: 4px 12px;
+}
+
+.bouton-fermer:hover:not(:disabled) {
+  background: #741f2d;
+}
+
+.aucune-action {
+  color: #9fb3c8;
+}
+
+/* ---- Formulaire ---- */
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 520px;
+}
+
+.formulaire label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.formulaire input,
+.formulaire textarea {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px 10px;
+  border: 1px solid #9fb3c8;
+  border-radius: 6px;
+}
+
+.obligatoire {
+  color: #8c2637;
+}
+
+.formulaire-erreur {
+  margin: 0;
+}
+
+/* ---- Etats : chargement, erreur ---- */
+.etat {
+  padding: 24px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.etat-chargement {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #d9e2ec;
+  color: #334e68;
+}
+
+.indicateur {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #d9e2ec;
+  border-top-color: #0b5cad;
+  border-radius: 50%;
+  animation: tourner 0.8s linear infinite;
+}
+
+@keyframes tourner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.etat-erreur {
+  background: #fdf0f2;
+  border: 1px solid #e3b2ba;
+  color: #8c2637;
+}
+
+.etat-erreur p {
+  margin: 0 0 12px;
+}
+
+/* ---- Messages d'erreur du serveur ---- */
+.message-erreur {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #fdf0f2;
+  border: 1px solid #e3b2ba;
+  color: #8c2637;
+  font-size: 0.95rem;
+}
