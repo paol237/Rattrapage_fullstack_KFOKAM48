@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { creerTicket, listerTickets, demarrerTicket, fermerTicket, supprimerTicket, ErreurApi } from '../services/ticketApi.js';
 import TicketForm from '../components/TicketForm.jsx';
 import TicketList from '../components/TicketList.jsx';
+import FloatingActions from '../components/FloatingActions.jsx';
 import { STATUTS } from '../components/BadgeStatut.jsx';
 
 const TAILLE_PAGE = 5;
@@ -189,7 +190,7 @@ export default function TicketsPage() {
           {erreurAction && <p className="message-erreur" role="alert">{erreurAction}</p>}
           {erreurSuppression && <p className="message-erreur" role="alert">{erreurSuppression}</p>}
 
-          <section className="card">
+          <section className="card card-tableau">
             <TicketList
               tickets={donnees.contenu}
               surDemarrer={gererDemarrer}
@@ -228,6 +229,8 @@ export default function TicketsPage() {
         enCours={creationEnCours}
         erreur={erreurFormulaire}
       />
+
+      <FloatingActions />
     </main>
   );
 }
