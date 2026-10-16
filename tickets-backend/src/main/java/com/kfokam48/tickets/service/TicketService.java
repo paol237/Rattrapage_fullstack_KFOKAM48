@@ -1,15 +1,18 @@
 package com.kfokam48.tickets.service;
 
 import com.kfokam48.tickets.dto.TicketInputDto;
+import com.kfokam48.tickets.dto.TicketListeDto;
 import com.kfokam48.tickets.dto.TicketOutputDto;
 import com.kfokam48.tickets.entity.Ticket;
 import com.kfokam48.tickets.exception.RegleMetierException;
 import com.kfokam48.tickets.exception.RessourceIntrouvableException;
 import com.kfokam48.tickets.repository.TicketRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -41,14 +44,29 @@ public class TicketService {
     }
 
     /**
-     * Liste de tous les tickets, ou seulement ceux d'un statut donne (filtre par statut).
+     * Liste paginee, filtrable par statut, triee par date de creation
+     * (asc = plus anciens d'abord, desc par defaut = plus recents d'abord).
+     * Le compteur de tickets ouverts porte sur tous les tickets, filtre ou non.
      */
     @Transactional(readOnly = true)
-    public List<TicketOutputDto> lister(Ticket.Statut statut) {
-        List<Ticket> tickets = (statut == null)
-                ? ticketRepository.findAllByOrderByIdAsc()
-                : ticketRepository.findByStatutOrderByIdAsc(statut);
-        return tickets.stream().map(TicketOutputDto::from).toList();
+    public TicketListeDto lister(Ticket.Statut statut, int page, int taille, String tri) {
+        boolean ascendant = "asc".equalsIgnoreCase(tri);
+        Sort sort = ascendant
+                ? Sort.by("dateCreation").ascending()
+                : Sort.by("dateCreation").descending();
+        Pageable pageable = PageRequest.of(Math.max(page, 0), taille, sort);
+        Page<Ticket> resultat = (statut == null)
+                ? ticketRepository.findAll(pageable)
+                : ticketRepository.findByStatut(statut, pageable);
+        return new TicketListeDto(
+                resultat.getContent().stream().map(TicketOutputDto::from).toList(),
+                resultat.getTotalElements(),
+                resultat.getNumber(),
+                resultat.getSize(),
+                resultat.getTotalPages(),
+                ascendant ? "asc" : "desc",
+                ticketRepository.countByStatut(Ticket.Statut.OUVERT)
+        );
     }
 
     /**
@@ -56,10 +74,7 @@ public class TicketService {
      * Un ticket FERME ne change plus d'etat -> RG-03 -> 409.
      */
     public TicketOutputDto fermer(Long id) {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new RessourceIntrouvableException(
-                        "Le ticket " + id + " n'existe pas."
-                ));
+        Ticket ticket = ticketTrouve(id);
         if (ticket.getStatut() == Ticket.Statut.FERME) {
             throw new RegleMetierException(
                     "RG-03",
@@ -68,5 +83,26 @@ public class TicketService {
         }
         ticket.setStatut(Ticket.Statut.FERME);
         return TicketOutputDto.from(ticketRepository.save(ticket));
+    }
+
+    /**
+     * Suppression reservee aux tickets FERME -> 409 RG-04 sinon, 404 si l'id est inconnu.
+     */
+    public void supprimer(Long id) {
+        Ticket ticket = ticketTrouve(id);
+        if (ticket.getStatut() != Ticket.Statut.FERME) {
+            throw new RegleMetierException(
+                    "RG-04",
+                    "RG-04 : seul un ticket FERME peut etre supprime. Fermez d'abord le ticket " + id + "."
+            );
+        }
+        ticketRepository.delete(ticket);
+    }
+
+    private Ticket ticketTrouve(Long id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new RessourceIntrouvableException(
+                        "Le ticket " + id + " n'existe pas."
+                ));
     }
 }

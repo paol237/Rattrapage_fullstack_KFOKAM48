@@ -219,6 +219,45 @@ h1 {
   margin: 0 0 12px;
 }
 
+/* ---- Compteur de tickets ouverts ---- */
+.compteur {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  background: #e1f5ea;
+  border: 1px solid #9edcc0;
+  border-radius: 6px;
+  color: #14735e;
+  font-size: 0.95rem;
+}
+
+.puce-tri {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+/* ---- Pagination ---- */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.page-info {
+  color: #52667a;
+  font-size: 0.9rem;
+}
+
+.bouton-supprimer {
+  background: #52667a;
+  padding: 4px 12px;
+}
+
+.bouton-supprimer:hover:not(:disabled) {
+  background: #334e68;
+}
+
 /* ---- Messages d'erreur du serveur ---- */
 .message-erreur {
   margin: 0 0 16px;

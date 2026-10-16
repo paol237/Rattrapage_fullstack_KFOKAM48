@@ -4,11 +4,18 @@ const BASE_URL = 'http://localhost:8080/api/tickets';
  * Service dedie aux appels API vers le backend.
  * Aucun composant n'appelle fetch directement.
  */
-export async function listerTickets(statut) {
-  const url = statut ? `${BASE_URL}?statut=${encodeURIComponent(statut)}` : BASE_URL;
-  const reponse = await fetch(url);
+export async function listerTickets({ statut, page = 0, taille = 5, tri = 'desc' } = {}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    taille: String(taille),
+    tri,
+  });
+  if (statut) {
+    params.set('statut', statut);
+  }
+  const reponse = await fetch(`${BASE_URL}?${params.toString()}`);
   if (!reponse.ok) {
-    throw new Error(`Le serveur a repondu avec le code ${reponse.status}.`);
+    throw new ErreurApi(`Le serveur a repondu avec le code ${reponse.status}.`, reponse.status);
   }
   return reponse.json();
 }
@@ -33,6 +40,15 @@ export async function fermerTicket(id) {
     throw new ErreurApi(extraireMessage(corps), reponse.status);
   }
   return corps;
+}
+
+export async function supprimerTicket(id) {
+  const reponse = await fetch(`${BASE_URL}/${id}`, { method: 'DELETE' });
+  if (!reponse.ok && reponse.status !== 204) {
+    const corps = await reponse.json().catch(() => null);
+    throw new ErreurApi(extraireMessage(corps), reponse.status);
+  }
+  return true;
 }
 
 export class ErreurApi extends Error {

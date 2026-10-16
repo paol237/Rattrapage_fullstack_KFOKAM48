@@ -11,7 +11,7 @@ function formatDate(iso) {
   });
 }
 
-export default function TicketList({ tickets, surFermer, ticketEnTraitement }) {
+export default function TicketList({ tickets, surFermer, surSupprimer, ticketEnTraitement }) {
   if (tickets.length === 0) {
     return <p className="liste-vide">Aucun ticket</p>;
   }
@@ -43,7 +43,15 @@ export default function TicketList({ tickets, surFermer, ticketEnTraitement }) {
                   {ticketEnTraitement === ticket.id ? '…' : 'Fermer'}
                 </button>
               ) : (
-                <span className="aucune-action">—</span>
+                <button
+                  type="button"
+                  className="bouton bouton-supprimer"
+                  onClick={() => surSupprimer(ticket)}
+                  disabled={ticketEnTraitement === ticket.id}
+                  title="Supprimer ce ticket fermé (définif)"
+                >
+                  {ticketEnTraitement === ticket.id ? '…' : 'Supprimer'}
+                </button>
               )}
             </td>
           </tr>

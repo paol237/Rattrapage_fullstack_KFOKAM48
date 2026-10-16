@@ -31,8 +31,11 @@ npm run dev
 | Verbe  | Chemin                      | Rôle             | Succès | Erreurs      |
 |--------|-----------------------------|------------------|--------|--------------|
 | POST   | `/api/tickets`              | Créer un ticket  | 201    | 400, 409     |
-| GET    | `/api/tickets?statut=...`   | Lister (filtre)  | 200    | —            |
+| GET    | `/api/tickets?statut=&page=&taille=&tri=` | Lister (filtre, pagination, tri par date) | 200    | —            |
 | PATCH  | `/api/tickets/{id}/fermer`  | Fermer un ticket | 200    | 404, 409     |
+| DELETE | `/api/tickets/{id}`         | Supprimer (ticket fermé uniquement) | 204    | 404, 409     |
+
+La liste renvoie un objet structuré : `contenu`, `totalElements`, `page`, `taille`, `totalPages`, `tri` et `ticketsOuverts` (compteur de tickets ouverts, tous statuts confondus). `tri=asc` = plus anciens d'abord, `tri=desc` (défaut) = plus récents d'abord.
 
 Le client n'envoie que `titre` et `description`. `statut` (OUVERT à la création) et `dateCreation` sont déterminés par le serveur.
 
@@ -43,6 +46,7 @@ Le client n'envoie que `titre` et `description`. `statut` (OUVERT à la créatio
 | RG-01 | Titre obligatoire, 100 caractères max → 400 avec le message exact                                          |
 | RG-02 | Titre unique (insensible à la casse) → 409, la réponse nomme la règle                                      |
 | RG-03 | Fermeture interdite sur un ticket FERME → 409, la réponse nomme la règle ; identifiant inconnu → 404        |
+| RG-04 | Suppression réservée aux tickets FERME → 409 si le ticket n'est pas fermé, 404 si l'identifiant est inconnu  |
 
 ### Exemples
 
@@ -66,6 +70,13 @@ curl -X PATCH http://localhost:8080/api/tickets/999/fermer
 
 **Frontend** (`tickets-frontend/src`) : `services/ticketApi.js` (seul endroit où `fetch` est appelé), `pages/TicketsPage.jsx` (conteneur : état et appels), `components/TicketList.jsx`, `components/TicketForm.jsx`, `components/BadgeStatut.jsx`. Interface en français, quatre états gérés : chargement, données, liste vide (« Aucun ticket »), erreur avec bouton « Réessayer ».
 
+### Bonus implémentés
+- **Pagination** : navigation « Précédent / Suivant » (5 tickets par page), dans toute la liste filtrée ou non.
+- **Badge de couleur par statut** : chaque statut a sa couleur (vert OUVERT, jaune EN_COURS, rouge FERME).
+- **Tri par date de création** : bouton « ↓ Plus récents / ↑ Plus anciens ».
+- **Compteur de tickets ouverts** : bandeau vert au-dessus de la liste.
+- **Suppression d'un ticket fermé** : bouton « Supprimer » uniquement sur les lignes FERME, avec confirmation et message RG-04 du serveur en cas de refus.
+
 ## Retrouver un ticket en base (partie A.4)
 
 ```bash
@@ -77,12 +88,12 @@ docker exec -it tickets-db psql -U tickets -d ticketsdb \
 
 1. Renommer la branche avec votre prenom-nom :
    ```bash
-   git branch -m rattrapage/prenom-nom rattrapage/votre-prenom-nom
+   git branch -m rattrapage/paol-djoumbouossie rattrapage/paol-djoumbouossie
    ```
 2. Ajouter le dépôt distant puis pousser :
    ```bash
-   git remote add origin <URL_DU_DEPOT>
-   git push -u origin rattrapage/votre-prenom-nom
+   git remote add origin git@github.com:paol237/Rattrapage_fullstack_KFOKAM48.git
+   git push -u origin rattrapage/paol-djoumbouossie
    ```
 3. Ouvrir la Pull Request vers `main` avec :
    - une capture de la page Swagger (trois endpoints visibles) ;

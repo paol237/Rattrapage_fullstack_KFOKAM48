@@ -1,25 +1,31 @@
 import { useCallback, useEffect, useState } from 'react';
-import { creerTicket, listerTickets, fermerTicket, ErreurApi } from '../services/ticketApi.js';
+import { creerTicket, listerTickets, fermerTicket, supprimerTicket, ErreurApi } from '../services/ticketApi.js';
 import TicketForm from '../components/TicketForm.jsx';
 import TicketList from '../components/TicketList.jsx';
 import { STATUTS } from '../components/BadgeStatut.jsx';
 
+const TAILLE_PAGE = 5;
+
 export default function TicketsPage() {
-  const [tickets, setTickets] = useState([]);
+  const [reponseListe, setReponseListe] = useState(null);
   const [chargement, setChargement] = useState(true);
   const [erreurChargement, setErreurChargement] = useState(null);
   const [statutFiltre, setStatutFiltre] = useState('');
+  const [pageCourante, setPageCourante] = useState(0);
+  const [tri, setTri] = useState('desc');
   const [erreurFormulaire, setErreurFormulaire] = useState(null);
   const [creationEnCours, setCreationEnCours] = useState(false);
   const [ticketEnTraitement, setTicketEnTraitement] = useState(null);
   const [erreurFermeture, setErreurFermeture] = useState(null);
+  const [erreurSuppression, setErreurSuppression] = useState(null);
 
-  const charger = useCallback(async (statut = statutFiltre) => {
+  const charger = useCallback(async ({ statut = statutFiltre, page = pageCourante, triCourant = tri } = {}) => {
     setChargement(true);
     setErreurChargement(null);
     try {
-      const liste = await listerTickets(statut || undefined);
-      setTickets(liste);
+      const reponse = await listerTickets({ statut: statut || undefined, page, taille: TAILLE_PAGE, tri: triCourant });
+      setReponseListe(reponse);
+      setPageCourante(reponse.page);
     } catch {
       setErreurChargement('Impossible de joindre le serveur. Vérifiez que le backend est démarré puis réessayez.');
     } finally {
@@ -30,11 +36,22 @@ export default function TicketsPage() {
 
   useEffect(() => {
     charger();
-  }, [charger]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function changerFiltre(statut) {
     setStatutFiltre(statut);
-    await charger(statut);
+    setPageCourante(0);
+    await charger({ statut, page: 0 });
+  }
+
+  async function changerTri(nouveauTri) {
+    setTri(nouveauTri);
+    await charger({ triCourant: nouveauTri });
+  }
+
+  async function changerPage(nouvellePage) {
+    await charger({ page: nouvellePage });
   }
 
   async function gererCreation(entree) {
@@ -42,7 +59,8 @@ export default function TicketsPage() {
     setErreurFormulaire(null);
     try {
       await creerTicket(entree);
-      await changerFiltre(statutFiltre);
+      await charger({ page: 0 });
+      setPageCourante(0);
       return true;
     } catch (erreur) {
       setErreurFormulaire(erreur instanceof ErreurApi ? erreur.message : 'La création a échoué.');
@@ -61,7 +79,7 @@ export default function TicketsPage() {
     setErreurFermeture(null);
     try {
       await fermerTicket(ticket.id);
-      await charger(statutFiltre);
+      await charger();
     } catch (erreur) {
       setErreurFermeture(
         `Ticket « ${ticket.titre} » : ${erreur instanceof ErreurApi ? erreur.message : 'la fermeture a échoué.'}`
@@ -71,9 +89,36 @@ export default function TicketsPage() {
     }
   }
 
+  async function gererSuppression(ticket) {
+    const confirme = window.confirm(
+      `Voulez-vous vraiment supprimer définitivement le ticket « ${ticket.titre} » ?`
+    );
+    if (!confirme) return;
+    setTicketEnTraitement(ticket.id);
+    setErreurSuppression(null);
+    try {
+      await supprimerTicket(ticket.id);
+      const resteSurCettePage = reponseListe && reponseListe.contenu.length > 1;
+      await charger(resteSurCettePage ? {} : { page: Math.max(pageCourante - 1, 0) });
+    } catch (erreur) {
+      setErreurSuppression(
+        `Ticket « ${ticket.titre} » : ${erreur instanceof ErreurApi ? erreur.message : 'la suppression a échoué.'}`
+      );
+    } finally {
+      setTicketEnTraitement(null);
+    }
+  }
+
+  const donnees = reponseListe || { contenu: [], totalElements: 0, totalPages: 0, ticketsOuverts: 0 };
+
   return (
     <main className="page">
       <h1>Gestion des tickets</h1>
+
+      <p className="compteur">
+        <strong>{donnees.ticketsOuverts}</strong> ticket{donnees.ticketsOuverts > 1 ? 's' : ''} ouvert
+        {donnees.ticketsOuverts > 1 ? 's' : ''} sur {donnees.totalElements} au total
+      </p>
 
       <div className="filtres" role="group" aria-label="Filtre par statut">
         <button
@@ -93,6 +138,14 @@ export default function TicketsPage() {
             {statut}
           </button>
         ))}
+        <button
+          type="button"
+          className="puce puce-tri"
+          onClick={() => changerTri(tri === 'desc' ? 'asc' : 'desc')}
+          title="Tri par date de création"
+        >
+          {tri === 'desc' ? '↓ Plus récents' : '↑ Plus anciens'}
+        </button>
       </div>
 
       {chargement && (
@@ -105,7 +158,7 @@ export default function TicketsPage() {
       {!chargement && erreurChargement && (
         <div className="etat etat-erreur" role="alert">
           <p>{erreurChargement}</p>
-          <button type="button" className="bouton" onClick={() => charger(statutFiltre)}>
+          <button type="button" className="bouton" onClick={() => charger()}>
             Réessayer
           </button>
         </div>
@@ -114,13 +167,38 @@ export default function TicketsPage() {
       {!chargement && !erreurChargement && (
         <>
           {erreurFermeture && <p className="message-erreur" role="alert">{erreurFermeture}</p>}
+          {erreurSuppression && <p className="message-erreur" role="alert">{erreurSuppression}</p>}
+
           <section className="card">
             <TicketList
-              tickets={tickets}
+              tickets={donnees.contenu}
               surFermer={gererFermeture}
+              surSupprimer={gererSuppression}
               ticketEnTraitement={ticketEnTraitement}
             />
           </section>
+
+          {donnees.totalPages > 1 && (
+            <nav className="pagination" aria-label="Pagination">
+              <button
+                type="button"
+                className="puce"
+                disabled={pageCourante === 0}
+                onClick={() => changerPage(pageCourante - 1)}
+              >
+                ← Précédent
+              </button>
+              <span className="page-info">Page {pageCourante + 1} / {donnees.totalPages}</span>
+              <button
+                type="button"
+                className="puce"
+                disabled={pageCourante >= donnees.totalPages - 1}
+                onClick={() => changerPage(pageCourante + 1)}
+              >
+                Suivant →
+              </button>
+            </nav>
+          )}
         </>
       )}
 

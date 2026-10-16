@@ -35,8 +35,9 @@ com.kfokam48.tickets
 | Verbe | Chemin | Succès | Erreurs |
 |---|---|---|---|
 | POST | `/api/tickets` | 201 | 400 (RG-01), 409 (RG-02) |
-| GET | `/api/tickets?statut=OUVERT\|EN_COURS\|FERME` | 200 | — |
+| GET | `/api/tickets?statut=&page=&taille=&tri=` | 200 | — |
 | PATCH | `/api/tickets/{id}/fermer` | 200 | 404 (id inconnu), 409 (RG-03) |
+| DELETE | `/api/tickets/{id}` | 204 | 404 (id inconnu), 409 (RG-04 : non fermé) |
 
 ### Endpoints vérifiés par tests réels (curl)
 
