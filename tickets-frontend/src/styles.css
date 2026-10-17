@@ -60,11 +60,13 @@
   --ombre-bleu: rgba(11, 92, 173, 0.3);
   --ombre-fort: rgba(11, 92, 173, 0.4);
 
-  /* Decor : halos lumineux, grille et degradé (derive de la marque bleu) */
+  /* Decor : halo lumineux + reseau de neurones (derive de la marque bleu) */
   --halo-a: rgba(11, 92, 173, 0.12);
   --halo-b: rgba(61, 135, 212, 0.1);
   --halo-c: rgba(158, 220, 192, 0.09);
-  --grille: rgba(11, 92, 173, 0.045);
+  --reseau-neurone: #0b5cad;        /* neurones : marque */
+  --reseau-liaison: #5c86ad;        /* liaisons : bleu attenue */
+  --reseau-impulsion: #b97a00;      /* impulsions : ambre de la marque */
   --primaire-clair: #3d87d4;
   --ombre-carte: rgba(31, 41, 51, 0.08);
   --halo-dimension: 550px;
@@ -123,10 +125,12 @@ html.theme-sombre {
   --ombre-bleu: rgba(37, 99, 235, 0.45);
   --ombre-fort: rgba(37, 99, 235, 0.55);
 
-  --halo-a: rgba(37, 99, 235, 0.14);
-  --halo-b: rgba(59, 130, 246, 0.1);
-  --halo-c: rgba(20, 115, 94, 0.12);
-  --grille: rgba(148, 163, 184, 0.05);
+  --halo-a: rgba(37, 99, 235, 0.16);
+  --halo-b: rgba(59, 130, 246, 0.12);
+  --halo-c: rgba(20, 115, 94, 0.14);
+  --reseau-neurone: #60a5fa;        /* neurones : bleu clair lisible en sombre */
+  --reseau-liaison: #3b6ea8;        /* liaisons : bleu attenue */
+  --reseau-impulsion: #5ad3a8;      /* impulsions : vert du statut ouvert */
   --primaire-clair: #60a5fa;
   --ombre-carte: rgba(0, 0, 0, 0.35);
 }
@@ -142,8 +146,9 @@ body {
 }
 
 /* ====================================================================
-   Decor d'arriere-plan : halos lumineux derives + grille discret.
-   Pur CSS (transform/opacity), derriere le contenu, jamais cliquable.
+   Decor d'arriere-plan : halo lumineux (CSS) + reseau de neurones (Canvas).
+   Derriere le contenu, jamais cliquable : le halo est a z-index -2,
+   le reseau de neurones a -1, le contenu au dessus des deux.
    ================================================================ */
 @keyframes derivee {
   from {
@@ -157,31 +162,18 @@ body {
   }
 }
 
-body::before,
-body::after {
+/* Halos lumineux aux couleurs de la marque, derive tres lentement */
+body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   pointer-events: none;
-}
-
-/* Halos lumineux aux couleurs de la marque, derive tres lentement */
-body::before {
   background:
     radial-gradient(var(--halo-dimension) var(--halo-dimension) at 12% 8%, var(--halo-a), transparent 70%),
     radial-gradient(calc(var(--halo-dimension) * 1.3) calc(var(--halo-dimension) * 1.3) at 88% 18%, var(--halo-b), transparent 70%),
     radial-gradient(calc(var(--halo-dimension) * 0.9) calc(var(--halo-dimension) * 0.9) at 55% 95%, var(--halo-c), transparent 70%);
   animation: derivee var(--dur-decor) var(--courbe) infinite alternate;
-}
-
-/* Grille discret (renforce la profondeur, fixe) */
-body::after {
-  background-image:
-    linear-gradient(var(--grille) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grille) 1px, transparent 1px);
-  background-size: 36px 36px;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
 }
 
 .page {
@@ -341,7 +333,13 @@ h1 {
   color: var(--badge-ferme-texte);
 }
 
-/* ---- Bouton polymorphe (variantes et tailles) ---- */
+/* ---- Reseau de neurones (Canvas) : couche active entre le halo et le contenu ---- */
+.reseau-neurones {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
 .bouton {
   display: inline-flex;
   align-items: center;
@@ -752,3 +750,6 @@ h1 {
     animation: tourner 0.8s linear infinite !important;
   }
 }
+
+/* Le reseau de neurones gere lui-meme prefers-reduced-motion (cadre statique
+   rendu par Canvas, sans boucle ni impulsion) : aucune regle CSS supplementaire. */
