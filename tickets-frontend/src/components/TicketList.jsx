@@ -1,4 +1,5 @@
 import { BadgeStatut } from './BadgeStatut.jsx';
+import Bouton from './Bouton.jsx';
 
 function formatDate(iso) {
   if (!iso) return '';
@@ -34,35 +35,38 @@ export default function TicketList({ tickets, surDemarrer, surFermer, surSupprim
             <td>{formatDate(ticket.dateCreation)}</td>
             <td className="cellule-actions">
               {ticket.statut === 'OUVERT' && (
-                <button
-                  type="button"
-                  className="bouton bouton-demarrer"
+                <Bouton
+                  variante="ambre"
+                  taille="petit"
                   onClick={() => surDemarrer(ticket)}
                   disabled={ticketEnTraitement === ticket.id}
+                  chargement={ticketEnTraitement === ticket.id}
                   title="Passer ce ticket en EN_COURS"
                 >
                   {ticketEnTraitement === ticket.id ? '…' : 'Démarrer'}
-                </button>
+                </Bouton>
               )}
               {ticket.statut === 'OUVERT' || ticket.statut === 'EN_COURS' ? (
-                <button
-                  type="button"
-                  className="bouton bouton-fermer"
+                <Bouton
+                  variante="danger"
+                  taille="petit"
                   onClick={() => surFermer(ticket)}
                   disabled={ticketEnTraitement === ticket.id}
+                  chargement={ticketEnTraitement === ticket.id}
                 >
                   {ticketEnTraitement === ticket.id ? '…' : 'Fermer'}
-                </button>
+                </Bouton>
               ) : (
-                <button
-                  type="button"
-                  className="bouton bouton-supprimer"
+                <Bouton
+                  variante="neutre"
+                  taille="petit"
                   onClick={() => surSupprimer(ticket)}
                   disabled={ticketEnTraitement === ticket.id}
+                  chargement={ticketEnTraitement === ticket.id}
                   title="Supprimer ce ticket fermé (définif)"
                 >
                   {ticketEnTraitement === ticket.id ? '…' : 'Supprimer'}
-                </button>
+                </Bouton>
               )}
             </td>
           </tr>

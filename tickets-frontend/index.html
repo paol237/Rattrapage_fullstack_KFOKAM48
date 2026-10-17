@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestion des tickets</title>
+    <script>
+      /* Theme applique avant le premier rendu : pas de flash au chargement. */
+      (function () {
+        try {
+          var mode = localStorage.getItem('theme') || 'systeme';
+          var sombre =
+            mode === 'sombre' ||
+            (mode === 'systeme' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (sombre) document.documentElement.classList.add('theme-sombre');
+          document.documentElement.dataset.theme = mode;
+        } catch (e) {
+          /* stockage indisponible : theme clair par defaut */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
