@@ -68,6 +68,16 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!--
+			Base en memoire pour les tests : permet de lancer les tests manuellement
+			(mvnw test ou IntelliJ) sans le conteneur PostgreSQL. Version geree
+			par le parent Spring Boot. Ne change ni le schema ni la logique metier.
+		-->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

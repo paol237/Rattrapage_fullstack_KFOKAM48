@@ -1,0 +1,25 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Tests backend (mvnw test)" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </MavenSettings>
+    <MavenRunnerParameters>
+      <option name="profiles">
+        <set />
+      </option>
+      <option name="goals">
+        <list>
+          <option value="test" />
+        </list>
+      </option>
+      <option name="pomFileName" value="pom.xml" />
+      <option name="profilesMap">
+        <list />
+      </option>
+      <option name="resolveToWorkspace" value="false" />
+      <option name="workingDirPath" value="$PROJECT_DIR$/tickets-backend" />
+    </MavenRunnerParameters>
+  </configuration>
+</component>

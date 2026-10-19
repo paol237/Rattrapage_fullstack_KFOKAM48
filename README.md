@@ -87,6 +87,24 @@ docker exec -it tickets-db psql -U tickets -d ticketsdb \
   -c "SELECT id, titre, statut, date_creation FROM tickets ORDER BY id;"
 ```
 
+## Lancer les tests backend manuellement
+
+Les tests utilisent une base H2 en mémoire (configurée dans `tickets-backend/src/test/resources/application.properties`) : **aucune dépendance à PostgreSQL ni au conteneur Docker** — `docker stop tickets-db` n'affecte pas les tests. Aucune donnée de développement n'est liée : le schéma est reconstruit (`create-drop`) à chaque suite.
+
+**A. Depuis IntelliJ IDEA (recommandé ici)**
+- Configuration partagée prête : `.run/Tests backend (mvnw test).run.xml` — elle apparaît dans la liste déroulante des configurations d'exécution en haut à droite de l'éditeur ; un clic, puis « ▶ ». IntelliJ détecte aussi le projet Maven automatiquement et propose l'icône de run au-dessus de chaque méthode `@Test`.
+- Autre mode : clic droit sur `TicketsApplicationTests.java` (ou sur le dossier `src/test/java`) → « Run 'TicketsApplicationTests' ».
+- Compatibilité vérifiée : JDK 21 et Spring Boot 4 sont pris en charge depuis IntelliJ IDEA 2024.2 ; tes installations (2024.3, 2025.x, 2026.x) couvrent largement, dont la version réellement utilisée (2026.2).
+
+**B. Depuis VS Code**
+- Extension « Extension Pack for Java » + « Spring Boot Extension Pack » ; boutons Run/Debug apparaissent au-dessus des méthodes `@Test`.
+
+**C. Depuis le terminal intégré de l'éditeur**
+```bash
+cd tickets-backend && ./mvnw test                     # toutes les suites
+cd tickets-backend && ./mvnw test -Dtest=TicketsApplicationTests   # une classe
+```
+> Le wrapper `mvnw` embarque sa propre version de Maven : alignée dans ton éditeur et dans les terminaux, peu importe la version installée dans le système.
 ## Épreuve D — Git / Pull Request
 
 1. Renommer la branche avec votre prenom-nom :
