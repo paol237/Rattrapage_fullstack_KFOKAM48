@@ -442,12 +442,33 @@ h1 {
   font-weight: 600;
 }
 
-/* ---- Formulaire ---- */
+/* ---- Formulaire : carte centre, colonne de champs centre ---- */
+#formulaire-nouveau-ticket {
+  max-width: 640px;   /* la carte de formulaire est centre dans la page */
+  margin-inline: auto;
+  padding: 28px 32px;
+}
+
+/* La seule carte avec un titre de section : dispose au centre au-dessus des champs */
+#formulaire-nouveau-ticket h2 {
+  text-align: center;
+  margin: 0 0 20px;
+}
+
 .formulaire {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   max-width: 520px;
+  margin-inline: auto;  /* la colonne de champs est centre la fois centre */
+  width: 100%;
+}
+
+.formulaire .bouton {
+  width: 100%;         /* bouton d'envoi pleine largeur, harmonieux */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: 600;
 }
 
 .formulaire label {
@@ -710,6 +731,10 @@ h1 {
 }
 
 @media (max-width: 640px) {
+  #formulaire-nouveau-ticket {
+    padding: 20px 16px;  /* moins de marge sur ecran etroit */
+  }
+
   .actions-flottantes {
     right: 14px;
     bottom: calc(14px + env(safe-area-inset-bottom, 0px));
