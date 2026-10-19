@@ -1,5 +1,11 @@
 import TicketsPage from './pages/TicketsPage.jsx';
+import ReseauNeurones from './components/ReseauNeurones.jsx';
 
 export default function App() {
-  return <TicketsPage />;
+  return (
+    <>
+      <ReseauNeurones />
+      <TicketsPage />
+    </>
+  );
 }
